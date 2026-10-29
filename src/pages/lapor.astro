@@ -6,6 +6,43 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--color-text); text-align: center;">Lapor Penipuan</h1>
     <p style="color: var(--color-text-muted); text-align: center; margin-bottom: 2.5rem;">Laporan Anda akan diverifikasi komunitas dan masuk database untuk melindungi orang lain. Data pribadi Anda aman & tidak dipublikasikan.</p>
 
+    <!-- AI Analysis Section -->
+    <div class="card" style="margin-bottom: 2rem; background: #f0f9ff; border-color: #bae6fd;">
+      <h3 style="font-size: 1rem; font-weight: 600; color: #0369a1; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2a10 10 0 0110 10c0 4.99-3.65 9.19-8.5 9.92V15H8v4H4v-4H2.06A10 10 0 0112 2z"/>
+          <path d="M8 14h8"/>
+          <path d="M8 18h8"/>
+          <path d="M12 10v4"/>
+        </svg>
+        Cek Pesan/Bukti dengan AI (Gratis)
+      </h3>
+      <p style="font-size: 0.875rem; color: #0369a1; margin-bottom: 1rem;">Tempelkan chat/teks mencurigakan atau upload screenshot untuk dianalisis AI sebelum lapor.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+        <textarea id="aiTextInput" placeholder="Paste chat/teks mencurigakan di sini..." style="flex: 1; min-width: 250px; min-height: 100px; padding: 0.75rem; border: 2px solid #bae6fd; border-radius: var(--radius); font-size: 0.9375rem; background: white; color: var(--color-text); outline: none; resize: vertical; font-family: inherit;"></textarea>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: white; border: 2px dashed #bae6fd; border-radius: var(--radius); font-size: 0.875rem; color: #0369a1;">
+          <input type="file" id="aiImageInput" accept="image/*" style="display: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <path d="M21 15l-5-5L5 17"/>
+          </svg>
+          Upload Screenshot
+        </label>
+        <button type="button" id="aiAnalyzeBtn" class="btn btn-outline" style="background: #0ea5e9; border-color: #0ea5e9; color: white;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          Analisis dengan AI
+        </button>
+        <span id="aiLoading" style="display: none; color: #0369a1; font-size: 0.875rem;">Menganalisis...</span>
+      </div>
+      <div id="aiResult" style="margin-top: 1rem; display: none;"></div>
+    </div>
+
     <form class="card" id="reportForm">
       <div style="margin-bottom: 1.5rem;">
         <label for="type" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-text);">Jenis Penipuan <span style="color: var(--color-primary);">*</span></label>
@@ -49,6 +86,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
           <input type="file" id="evidence" name="evidence" multiple accept="image/*,.pdf" style="display: none;" required>
         </div>
         <div id="fileList" style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+        <p id="uploadStatus" style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--color-text-muted); display: none;"></p>
       </div>
 
       <div style="margin-bottom: 1.5rem;">
@@ -84,9 +122,17 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   </section>
 
   <script>
+    // ===== CONFIG - GANTI DENGAN URL WORKER ANDA =====
+    const UPLOAD_WORKER_URL = 'https://awasscam-upload.<your-subdomain>.workers.dev';
+    const ANALYZE_WORKER_URL = 'https://awasscam-analyze.<your-subdomain>.workers.dev';
+    // =================================================
+
+    // --- File Upload Handling ---
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('evidence');
     const fileList = document.getElementById('fileList');
+    const uploadStatus = document.getElementById('uploadStatus');
+    let selectedFiles: File[] = [];
 
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
       dropZone.addEventListener(eventName, preventDefaults, false);
@@ -112,6 +158,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
     function handleFiles(e) {
       const files = Array.from(e.target.files).slice(0, 5);
+      selectedFiles = files;
       fileList.innerHTML = '';
       files.forEach(file => {
         if (file.size > 10 * 1024 * 1024) {
@@ -126,6 +173,159 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       });
     }
 
+    async function uploadFilesToR2(files: File[], reportId?: string): Promise<string[]> {
+      if (!files.length) return [];
+      
+      uploadStatus.style.display = 'block';
+      uploadStatus.textContent = 'Mengupload bukti ke cloud...';
+      uploadStatus.style.color = 'var(--color-primary)';
+
+      const formData = new FormData();
+      files.forEach(f => formData.append('files', f));
+      if (reportId) formData.append('reportId', reportId);
+
+      try {
+        const response = await fetch(UPLOAD_WORKER_URL, {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+          uploadStatus.textContent = `${result.files.length} file terupload`;
+          uploadStatus.style.color = '#16a34a';
+          return result.files;
+        } else {
+          throw new Error(result.error || 'Upload failed');
+        }
+      } catch (err) {
+        uploadStatus.textContent = 'Upload gagal: ' + err.message;
+        uploadStatus.style.color = '#dc2626';
+        return [];
+      }
+    }
+
+    // --- AI Analysis ---
+    const aiTextInput = document.getElementById('aiTextInput') as HTMLTextAreaElement;
+    const aiImageInput = document.getElementById('aiImageInput') as HTMLInputElement;
+    const aiAnalyzeBtn = document.getElementById('aiAnalyzeBtn') as HTMLButtonElement;
+    const aiLoading = document.getElementById('aiLoading');
+    const aiResult = document.getElementById('aiResult');
+
+    const typeLabels: Record<string, string> = {
+      investasi: 'Investasi Bodong', pinjol: 'Pinjol Ilegal', phishing: 'Phishing',
+      belanja: 'Penipuan Belanja', lowongan: 'Lowongan Palsu', hadiah: 'Hadiah Palsu', lainnya: 'Lainnya'
+    };
+    const riskColors: Record<string, string> = {
+      low: '#16a34a', medium: '#d97706', high: '#ea580c', critical: '#dc2626'
+    };
+    const riskLabels: Record<string, string> = {
+      low: 'Rendah', medium: 'Sedang', high: 'Tinggi', critical: 'Kritis'
+    };
+
+    aiAnalyzeBtn.addEventListener('click', async () => {
+      const text = aiTextInput.value.trim();
+      const image = aiImageInput.files?.[0] || null;
+
+      if (!text && !image) {
+        alert('Masukkan teks atau upload screenshot terlebih dahulu');
+        return;
+      }
+
+      aiAnalyzeBtn.disabled = true;
+      aiLoading.style.display = 'inline';
+      aiResult.style.display = 'none';
+      aiResult.innerHTML = '';
+
+      try {
+        const formData = new FormData();
+        if (text) formData.append('text', text);
+        if (image) formData.append('image', image);
+
+        const response = await fetch(ANALYZE_WORKER_URL, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          renderAIResult(data.analysis);
+        } else {
+          throw new Error(data.error || 'Analisis gagal');
+        }
+      } catch (err) {
+        aiResult.style.display = 'block';
+        aiResult.innerHTML = `<div style="padding: 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius); color: #dc2626;">Error: ${err.message}</div>`;
+      } finally {
+        aiAnalyzeBtn.disabled = false;
+        aiLoading.style.display = 'none';
+      }
+    });
+
+    function renderAIResult(analysis: any) {
+      aiResult.style.display = 'block';
+      const riskColor = riskColors[analysis.risk_level] || '#6b7280';
+      
+      let html = `
+        <div style="padding: 1rem; background: ${analysis.is_scam ? '#fef2f2' : '#f0fdf4'}; border: 1px solid ${analysis.is_scam ? '#fecaca' : '#bbf7d0'}; border-radius: var(--radius);">
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; align-items: center;">
+            <span class="badge" style="background: ${analysis.is_scam ? '#fef2f2' : '#f0fdf4'}; color: ${analysis.is_scam ? '#dc2626' : '#16a34a'}; font-size: 0.875rem;">
+              ${analysis.is_scam ? '⚠ TERDETEKSI PENIPUAN' : '✓ KEMUNGKINAN RENDAH'}
+            </span>
+            <span class="badge" style="background: ${riskColor}20; color: ${riskColor};">
+              Risiko: ${riskLabels[analysis.risk_level] || analysis.risk_level}
+            </span>
+            <span class="badge badge-info">Keyakinan: ${analysis.confidence}%</span>
+            <span class="badge" style="background: #e0e7ff; color: #3730a3;">${typeLabels[analysis.scam_type] || analysis.scam_type}</span>
+          </div>
+          
+          ${analysis.indicators.length > 0 ? `
+            <div style="margin-bottom: 1rem;">
+              <strong style="color: var(--color-text);">Indikator Terdeteksi:</strong>
+              <ul style="margin: 0.5rem 0 0 1.25rem; color: var(--color-text-muted); font-size: 0.875rem;">
+                ${analysis.indicators.map((i: string) => `<li>${i}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          ${analysis.extracted_contacts.length > 0 ? `
+            <div style="margin-bottom: 1rem;">
+              <strong style="color: var(--color-text);">Kontak Terbaca:</strong>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                ${analysis.extracted_contacts.map((c: string) => `<span class="badge badge-info" style="font-size: 0.75rem;">${c}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <div style="padding: 1rem; background: white; border-radius: var(--radius); border: 1px solid var(--color-border);">
+            <strong style="color: var(--color-text);">Saran AI:</strong>
+            <p style="margin: 0.5rem 0 0; color: var(--color-text-muted); font-size: 0.9375rem;">${analysis.advice}</p>
+          </div>
+          
+          <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--color-text-muted); text-align: center;">
+            Analisis otomatis, bukan keputusan final. Selalu verifikasi manual.
+          </p>
+        </div>
+      `;
+      aiResult.innerHTML = html;
+    }
+
+    // Auto-fill form from AI analysis
+    function fillFormFromAI(analysis: any) {
+      if (analysis.scam_type && analysis.scam_type !== 'lainnya') {
+        (document.getElementById('type') as HTMLSelectElement).value = analysis.scam_type;
+      }
+      if (analysis.extracted_contacts.length > 0) {
+        const contactField = document.getElementById('contact') as HTMLTextAreaElement;
+        const existing = contactField.value.trim();
+        const newContacts = analysis.extracted_contacts.filter((c: string) => !existing.includes(c));
+        if (newContacts.length > 0) {
+          contactField.value = (existing + (existing ? '\n' : '') + newContacts.join('\n')).trim();
+        }
+      }
+    }
+
+    // --- Form Submit ---
     document.getElementById('reportForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
@@ -136,12 +336,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       submitBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0110 10" stroke-opacity="1"/></svg> Mengirim...';
 
       try {
-        // Collect files (in real implementation, upload to R2/cloud storage first)
-        const fileInput = document.getElementById('evidence') as HTMLInputElement;
-        const files = Array.from(fileInput?.files || []).slice(0, 5);
-        // For now, just store file names - actual upload needs R2/s3
-        const evidenceFiles = files.map(f => f.name);
-
+        // 1. Submit report first to get reportId
         const response = await fetch('/api/report', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -150,24 +345,38 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
             contact: formData.get('contact'),
             chronology: formData.get('chronology'),
             loss_amount: parseInt(formData.get('loss') as string) || 0,
-            evidence_files: evidenceFiles
+            evidence_files: [] // Will update after upload
           })
         });
 
         const result = await response.json();
-        if (result.success) {
-          alert(`Laporan terkirim! ID: ${result.reportId}\nMenunggu verifikasi admin.`);
-          e.target.reset();
-          fileList.innerHTML = '';
-        } else {
-          alert('Gagal: ' + (result.errors?.join(', ') || result.error || 'Unknown error'));
+        if (!result.success) {
+          throw new Error(result.errors?.join(', ') || result.error || 'Gagal kirim laporan');
         }
+
+        const reportId = result.reportId;
+
+        // 2. Upload files to R2 with reportId
+        const uploadedKeys = await uploadFilesToR2(selectedFiles, reportId.toString());
+
+        // 3. (Optional) Update report with uploaded file keys - handled by worker
+
+        alert(`Laporan terkirim! ID: ${reportId}\n${uploadedKeys.length} bukti terupload.\nMenunggu verifikasi admin.`);
+        e.target.reset();
+        fileList.innerHTML = '';
+        selectedFiles = [];
+        uploadStatus.style.display = 'none';
+        
       } catch (err) {
-        alert('Error jaringan: ' + err.message);
+        alert('Error: ' + err.message);
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnText;
       }
     });
   </script>
+
+  <style>
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  </style>
 </BaseLayout>
