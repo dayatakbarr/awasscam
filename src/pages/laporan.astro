@@ -1,0 +1,162 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+<BaseLayout title="Daftar Laporan - AwasScam" description="Daftar laporan penipuan terverifikasi dari komunitas AwasScam. Filter berdasarkan jenis, status, dan waktu.">
+  <section class="container" style="padding: 3rem 1.5rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--color-text);">Daftar Laporan Penipuan</h1>
+      <p style="color: var(--color-text-muted);">Laporan yang telah diverifikasi komunitas. Urutkan & filter untuk menemukan informasi yang dibutuhkan.</p>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; align-items: center;">
+      <div style="flex: 1; min-width: 250px; position: relative;">
+        <input type="search" id="search" placeholder="Cari nomor, link, kata kunci..." style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 2px solid var(--color-border); border-radius: var(--radius); font-size: 0.9375rem; background: var(--color-bg); color: var(--color-text); outline: none;" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); pointer-events: none;">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+      </div>
+      <select id="filterType" style="padding: 0.75rem 1rem; border: 2px solid var(--color-border); border-radius: var(--radius); font-size: 0.9375rem; background: var(--color-bg); color: var(--color-text); outline: none; min-width: 180px;">
+        <option value="">Semua Jenis</option>
+        <option value="investasi">Investasi Bodong</option>
+        <option value="pinjol">Pinjol Ilegal</option>
+        <option value="phishing">Phishing</option>
+        <option value="belanja">Penipuan Belanja</option>
+        <option value="lowongan">Lowongan Palsu</option>
+        <option value="hadiah">Hadiah Palsu</option>
+      </select>
+      <select id="filterStatus" style="padding: 0.75rem 1rem; border: 2px solid var(--color-border); border-radius: var(--radius); font-size: 0.9375rem; background: var(--color-bg); color: var(--color-text); outline: none; min-width: 160px;">
+        <option value="">Semua Status</option>
+        <option value="verified">Terverifikasi</option>
+        <option value="pending">Menunggu Verifikasi</option>
+        <option value="rejected">Ditolak</option>
+      </select>
+    </div>
+
+    <div id="reportsList">
+      <article class="card" style="margin-bottom: 1rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span class="badge badge-danger">Investasi Bodong</span>
+          <span class="badge badge-success">Terverifikasi</span>
+          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">2 jam lalu</span>
+        </div>
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">"Trading Bot AI" Return 10%/Hari</h3>
+        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">Menawarkan bot trading otomatis dengan return tetap harian. Minta transfer ke rekening pribadi. Website palsu dengan dashboard manipulatif.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
+          <span>📞 <strong>0812-3456-7890</strong></span>
+          <span>🔗 <strong>bit.ly/trading-bot-ai</strong></span>
+          <span>💰 <strong>Rp 15.000.000</strong> (3 korban)</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/laporan/1" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
+          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
+        </div>
+      </article>
+
+      <article class="card" style="margin-bottom: 1rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span class="badge badge-warning">Pinjol Ilegal</span>
+          <span class="badge badge-success">Terverifikasi</span>
+          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">5 jam lalu</span>
+        </div>
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">Aplikasi "CepatCair" Bunga 40%/Minggu</h3>
+        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">Aplikasi tidak resmi di Play Store, minta akses kontak & galeri, lalu ancar sebar foto ke kontak jika telat bayar. Bunga tidak masuk akal.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
+          <span>🔗 <strong>cepatchair.apk (file APK)</strong></span>
+          <span>📞 <strong>0857-9876-5432</strong> (CS palsu)</span>
+          <span>💰 <strong>Rp 8.500.000</strong> (7 korban)</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/laporan/2" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
+          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
+        </div>
+      </article>
+
+      <article class="card" style="margin-bottom: 1rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span class="badge badge-info">Phishing</span>
+          <span class="badge badge-success">Terverifikasi</span>
+          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">1 hari lalu</span>
+        </div>
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">SMS Palsu "BRI" Verifikasi Akun</h3>
+        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">SMS mengaku dari BRI: "Akun Anda akan diblokir, verifikasi di link berikut". Link mengarah ke halaman login palsu mirip BRI. Nomor pengirim: 0812-xxxx-xxxx (bukan short code bank).</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
+          <span>📞 <strong>0812-1111-2222</strong></span>
+          <span>🔗 <strong>bri-verifikasi.xyz</strong></span>
+          <span>🏦 <strong>Target: Nasabah BRI</strong></span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/laporan/3" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
+          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
+        </div>
+      </article>
+
+      <article class="card" style="margin-bottom: 1rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span class="badge badge-warning">Pinjol Ilegal</span>
+          <span class="badge badge-warning">Menunggu Verifikasi</span>
+          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">2 hari lalu</span>
+        </div>
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">Pinjol "DanaCepat" Tanpa Survei</h3>
+        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">Mengaku pinjol legal tapi tidak terdaftar OJK. Proses cepat, tapi bunga tersembunyi 1%/hari + biaya admin besar. Ancaman fisik jika telat.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
+          <span>🔗 <strong>danacepat.com (domain baru)</strong></span>
+          <span>📞 <strong>0821-5555-6666</strong></span>
+          <span>💰 <strong>Rp 3.200.000</strong> (2 korban)</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/laporan/4" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
+          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
+        </div>
+      </article>
+
+      <article class="card" style="margin-bottom: 1rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span class="badge badge-info">Phishing</span>
+          <span class="badge badge-success">Terverifikasi</span>
+          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">3 hari lalu</span>
+        </div>
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">Email Palsu "Tokopedia/Shopee" Pesanan Bermasalah</h3>
+        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">Email mengaku dari marketplace: "Pesanan Anda gagal, klik untuk refund". Link ke halaman phishing minta login & data kartu kredit. Domain: tokopedia-refund.xyz (bukan resmi).</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
+          <span>📧 <strong>noreply@tokopedia-refund.xyz</strong></span>
+          <span>🔗 <strong>tokopedia-refund.xyz</strong></span>
+          <span>🎯 <strong>Target: Pengguna e-commerce</strong></span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/laporan/5" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
+          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
+        </div>
+      </article>
+
+      <article class="card" style="margin-bottom: 1rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span class="badge badge-danger">Investasi Bodong</span>
+          <span class="badge badge-success">Terverifikasi</span>
+          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">4 hari lalu</span>
+        </div>
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">Skema "Arisan Digital" Untung 30%/Bulan</h3>
+        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">Menggunakan nama "arisan" tapi sistem piramida. Bayar iuran, dapat komisi undang orang. Uang korban baru bayar korban lama. Sudah puluhan juta rupiah terkumpul.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
+          <span>📞 <strong>0813-4444-5555</strong> (Leader grup)</span>
+          <span>💬 <strong>Grup WhatsApp "Arisan Sejahtera"</strong></span>
+          <span>💰 <strong>Rp 45.000.000+</strong> (15+ korban)</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/laporan/6" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
+          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
+        </div>
+      </article>
+    </div>
+
+    <nav style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem;" aria-label="Pagination">
+      <button class="btn btn-outline" style="padding: 0.5rem 1rem;" disabled>Sebelumnya</button>
+      <button class="btn btn-primary" style="padding: 0.5rem 1rem; min-width: 44px;">1</button>
+      <button class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 44px;">2</button>
+      <button class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 44px;">3</button>
+      <span style="display: flex; align-items: center; padding: 0 0.5rem; color: var(--color-text-muted);">...</span>
+      <button class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 44px;">12</button>
+      <button class="btn btn-outline" style="padding: 0.5rem 1rem;">Selanjutnya</button>
+    </nav>
+  </section>
+</BaseLayout>

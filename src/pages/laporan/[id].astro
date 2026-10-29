@@ -1,0 +1,149 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { GetStaticPaths } from 'astro';
+
+// TODO: Replace with actual database query when backend is ready
+// For now, return empty paths to avoid build error (static output requires getStaticPaths)
+export const getStaticPaths: GetStaticPaths = async () => {
+  return [];
+};
+---
+<BaseLayout title="Detail Laporan - AwasScam" description="Detail laporan penipuan terverifikasi dengan bukti, kronologi, dan informasi pelaku.">
+  <section class="container" style="padding: 3rem 1.5rem; max-width: 800px;">
+    <nav style="margin-bottom: 2rem;">
+      <a href="/laporan" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">← Kembali ke Daftar</a>
+    </nav>
+
+    <article class="card">
+      <header style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border);">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+          <span class="badge badge-danger">Investasi Bodong</span>
+          <span class="badge badge-success">Terverifikasi</span>
+          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">Dilaporkan: 2 jam lalu</span>
+        </div>
+        <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text); margin-bottom: 0.5rem;">"Trading Bot AI" Return 10%/Hari</h1>
+        <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 0.875rem; color: var(--color-text-muted);">
+          <span>👁 <strong>1.2K</strong> dilihat</span>
+          <span>👍 <strong>47</strong> bermanfaat</span>
+          <span>🔗 <strong>3</strong> kali dibagikan</span>
+        </div>
+      </header>
+
+      <section style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 1rem;">Kontak Pelaku</h2>
+        <div style="display: grid; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" style="flex-shrink: 0;">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+            <div>
+              <div style="font-weight: 500; color: var(--color-text);">0812-3456-7890</div>
+              <div style="font-size: 0.8125rem; color: var(--color-text-muted;">WhatsApp / Telegram</div>
+            </div>
+            <button class="btn btn-outline" style="padding: 0.375rem 0.75rem; font-size: 0.75rem; margin-left: auto;">Salin</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" style="flex-shrink: 0;">
+              <path d="M21 12.79A9 9 0 1114.64 3.14"/>
+              <path d="M21 3l-9 9"/>
+              <path d="M15 3h6v6"/>
+            </svg>
+            <div>
+              <div style="font-weight: 500; color: var(--color-text); word-break: break-all;">bit.ly/trading-bot-ai</div>
+              <div style="font-size: 0.8125rem; color: var(--color-text-muted;">Website palsu (sudah down)</div>
+            </div>
+            <button class="btn btn-outline" style="padding: 0.375rem 0.75rem; font-size: 0.75rem; margin-left: auto;">Salin</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" style="flex-shrink: 0;">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8"/>
+              <path d="M12 17v4"/>
+            </svg>
+            <div>
+              <div style="font-weight: 500; color: var(--color-text);">123-456-7890 (BCA)</div>
+              <div style="font-size: 0.8125rem; color: var(--color-text-muted;">A.n. ANDI SUSANTO</div>
+            </div>
+            <button class="btn btn-outline" style="padding: 0.375rem 0.75rem; font-size: 0.75rem; margin-left: auto;">Salin</button>
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 1rem;">Kronologi Penipuan</h2>
+        <div style="background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border); padding: 1.5rem; white-space: pre-wrap; line-height: 1.7; color: var(--color-text);">
+Saya ditambah ke grup WhatsApp "Trading Bot AI Official" oleh teman (yg ternyata juga korban). Di grup ada admin yg ngasih testimoni profit harian, screenshot dashboard yg lucu banget - profit tiap hari pasti 10%, gak pernah loss.
+
+Admin bilang minimum deposit 5jt, bisa WD kapan aja. Saya deposit 5jt ke rekening BCA a.n. ANDI SUSANTO. Setelah transfer, dimasukin ke "dashboard" websitenya (bit.ly/trading-bot-ai). Di dashboard terlihat profit naik tiap hari.
+
+Seminggu lalu mau WD 10jt (modal + profit), admin bilang "server maintenance", minta tunggu 3 hari. Setelah 3 hari, websitenya gak kebuka, grup WhatsApp dihapus, admin blokir semua member.
+
+Teman saya yg ngajak juga kena 15jt. Total kerugian sekitar 20jt dari 2 orang yg saya tau. Di grup awalnya ada 50+ member, jadi kemungkinan korban lebih banyak.
+        </div>
+      </section>
+
+      <section style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 1rem;">Bukti</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <div style="aspect-ratio: 4/3; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 0.875rem;">Screenshot Chat WhatsApp</div>
+          <div style="aspect-ratio: 4/3; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 0.875rem;">Screenshot Dashboard Palsu</div>
+          <div style="aspect-ratio: 4/3; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 0.875rem;">Bukti Transfer</div>
+          <div style="aspect-ratio: 4/3; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 0.875rem;">Screenshot Grup Dihapus</div>
+        </div>
+      </section>
+
+      <section style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 1rem;">Modus Operandi</h2>
+        <ul style="display: grid; gap: 0.5rem; color: var(--color-text); line-height: 1.7;">
+          <li style="display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.75rem; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="flex-shrink: 0; margin-top: 0.125rem;"><polyline points="20 6 9 17 4 12"/></svg> Menggunakan grup WhatsApp/Telegram dengan testimoni palsu (akun bot/komplotan)</li>
+          <li style="display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.75rem; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="flex-shrink: 0; margin-top: 0.125rem;"><polyline points="20 6 9 17 4 12"/></svg> Janji return tetap tinggi (10%/hari = 3650%/tahun - mustahil)</li>
+          <li style="display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.75rem; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="flex-shrink: 0; margin-top: 0.125rem;"><polyline points="20 6 9 17 4 12"/></svg> Website/dashboard palsu yang bisa dimanipulasi admin</li>
+          <li style="display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.75rem; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="flex-shrink: 0; margin-top: 0.125rem;"><polyline points="20 6 9 17 4 12"/></svg> Minta transfer ke rekening pribadi (bukan rekening perusahaan resmi)</li>
+          <li style="display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.75rem; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);"><svg width="20 6 9 17 4 12" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="flex-shrink: 0; margin-top: 0.125rem;"><polyline points="20 6 9 17 4 12"/></svg> Alasan "maintenance/server error" saat WD, lalu kabur</li>
+        </ul>
+      </section>
+
+      <section style="padding-top: 1.5rem; border-top: 1px solid var(--color-border);">
+        <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 1rem;">Tindakan yang Disarankan</h2>
+        <div style="display: grid; gap: 0.75rem;">
+          <a href="https://wa.me/6281234567890?text=Laporan%20penipuan%20trading%20bot" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content: flex-start; gap: 0.75rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+            Hubungi Korban Lain (Grup Dukungan)
+          </a>
+          <a href="https://www.bpi.go.id" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content: flex-start; gap: 0.75rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Laporkan ke BPI (Investasi Bodong)
+          </a>
+          <a href="https://www.ojk.go.id" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content: flex-start; gap: 0.75rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Cek Daftar Investasi Legal di OJK
+          </a>
+          <button class="btn btn-primary" style="justify-content: flex-start; gap: 0.75rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+            Bagikan Laporan Ini
+          </button>
+        </div>
+      </section>
+    </article>
+
+    <section class="container" style="padding: 2rem 1.5rem; max-width: 800px; text-align: center; background: var(--color-surface); border-radius: var(--radius); margin-top: 2rem;">
+      <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.5rem;">Punya pengalaman serupa?</h3>
+      <p style="color: var(--color-text-muted); margin-bottom: 1.5rem;">Tambahkan komentar atau bukti Anda untuk memperkuat laporan ini.</p>
+      <a href="/lapor" class="btn btn-primary">Lapor Sekarang</a>
+    </section>
+  </section>
+</BaseLayout>

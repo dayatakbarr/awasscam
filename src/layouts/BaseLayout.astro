@@ -1,0 +1,99 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = 'AwasScam - Cek & Laporkan Penipuan Online' } = Astro.props;
+---
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#dc2626" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style is:global>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --color-primary: #dc2626;
+        --color-primary-dark: #b91c1c;
+        --color-bg: #ffffff;
+        --color-surface: #fafafa;
+        --color-text: #111827;
+        --color-text-muted: #6b7280;
+        --color-border: #e5e7eb;
+        --font-sans: 'Inter', system-ui, sans-serif;
+        --radius: 8px;
+        --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color-bg: #0f172a;
+          --color-surface: #1e293b;
+          --color-text: #f1f5f9;
+          --color-text-muted: #94a3b8;
+          --color-border: #334155;
+        }
+      }
+      html { font-size: 16px; scroll-behavior: smooth; }
+      body { font-family: var(--font-sans); background: var(--color-bg); color: var(--color-text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+      a { color: var(--color-primary); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      img { max-width: 100%; height: auto; display: block; }
+      .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+      .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: var(--radius); font-weight: 600; font-size: 0.9375rem; border: none; cursor: pointer; transition: all 0.2s; }
+      .btn-primary { background: var(--color-primary); color: white; }
+      .btn-primary:hover { background: var(--color-primary-dark); text-decoration: none; }
+      .btn-outline { background: transparent; border: 2px solid var(--color-primary); color: var(--color-primary); }
+      .btn-outline:hover { background: var(--color-primary); color: white; text-decoration: none; }
+      .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); transition: box-shadow 0.2s; }
+      .card:hover { box-shadow: var(--shadow-lg); }
+      .badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+      .badge-danger { background: #fef2f2; color: #dc2626; }
+      .badge-warning { background: #fffbeb; color: #d97706; }
+      .badge-success { background: #f0fdf4; color: #16a34a; }
+      .badge-info { background: #eff6ff; color: #2563eb; }
+      @media (prefers-color-scheme: dark) {
+        .badge-danger { background: #7f1d1d; color: #fca5a5; }
+        .badge-warning { background: #78350f; color: #fcd34d; }
+        .badge-success { background: #14532d; color: #86efac; }
+        .badge-info { background: #1e3a5f; color: #93c5fd; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="container" style="padding-top: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border);">
+      <nav style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+        <a href="/" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.25rem; color: var(--color-text);">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+            <rect width="32" height="32" rx="8" fill="var(--color-primary)"/>
+            <path d="M16 8V24M8 16H24" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>AwasScam</span>
+        </a>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <a href="/cek" class="btn btn-outline">Cek Nomor/Link</a>
+          <a href="/lapor" class="btn btn-primary">Lapor Penipuan</a>
+        </div>
+      </nav>
+    </header>
+    <main style="flex: 1; width: 100%;">
+      <slot />
+    </main>
+    <footer class="container" style="padding: 2rem 1.5rem; border-top: 1px solid var(--color-border); color: var(--color-text-muted); font-size: 0.875rem;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+        <p>&copy; 2024 AwasScam. Dibuat untuk keamanan bersama.</p>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="/tentang" style="color: var(--color-text-muted);">Tentang</a>
+          <a href="/privasi" style="color: var(--color-text-muted);">Privasi</a>
+          <a href="/kontak" style="color: var(--color-text-muted);">Kontak</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
