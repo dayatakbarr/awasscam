@@ -1,0 +1,19 @@
+{
+  "name": "awasscam-api",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "bun --watch run index.ts"
+  },
+  "dependencies": {
+    "elysia": "^1.0.0",
+    "better-sqlite3": "^9.0.0",
+    "ioredis": "^5.0.0",
+    "@elysiajs/cors": "^1.0.0",
+    "@elysiajs/swagger": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "bun-types": "latest"
+  }
+}

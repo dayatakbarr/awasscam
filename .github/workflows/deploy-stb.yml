@@ -1,0 +1,56 @@
+name: Deploy to Armbian STB
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-stb:
+    name: Deploy to STB
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to STB via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.STB_HOST }}
+          username: ${{ secrets.STB_USER }}
+          port: ${{ secrets.STB_PORT }}
+          key: ${{ secrets.STB_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -e
+            cd /home/${{ secrets.STB_USER }}/awasscam
+            
+            echo "📥 Pulling latest code..."
+            git pull origin main
+            
+            echo "📦 Installing dependencies..."
+            npm ci --prefer-offline --no-audit 2>&1 | tail -20
+            
+            echo "🔨 Building frontend..."
+            npm run build 2>&1 | tail -10
+            
+            echo "🔄 Reloading Nginx..."
+            sudo systemctl reload nginx
+            
+            echo "🔄 Restarting API (Bun)..."
+            if pm2 list | grep -q "awasscam-api"; then
+              pm2 restart awasscam-api --update-env
+            else
+              cd /home/${{ secrets.STB_USER }}/awasscam-api
+              pm2 start index.ts --name awasscam-api --interpreter bun
+            fi
+            
+            echo "✅ Deploy complete!"
+            pm2 status
+            sudo systemctl status nginx --no-pager -l
+
+      - name: Health check
+        run: |
+          sleep 10
+          curl -sf https://awasscam.${{ secrets.DOMAIN }}/ > /dev/null && echo "✅ Frontend OK" || echo "❌ Frontend failed"
+          curl -sf https://api.awasscam.${{ secrets.DOMAIN }}/api/reports > /dev/null && echo "✅ API OK" || echo "❌ API failed"
