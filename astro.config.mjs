@@ -8,6 +8,7 @@ export default defineConfig({
     webAnalytics: {
       enabled: true,
     },
+    runtime: 'nodejs20.x',
   }),
   build: {
     inlineStylesheets: 'auto',
