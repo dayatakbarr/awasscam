@@ -26,7 +26,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         <option value="hadiah">Hadiah Palsu</option>
       </select>
       <select id="filterStatus" style="padding: 0.75rem 1rem; border: 2px solid var(--color-border); border-radius: var(--radius); font-size: 0.9375rem; background: var(--color-bg); color: var(--color-text); outline: none; min-width: 160px;">
-        <option value="">Semua Status</option>
         <option value="verified">Terverifikasi</option>
         <option value="pending">Menunggu Verifikasi</option>
         <option value="rejected">Ditolak</option>
@@ -34,129 +33,183 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     </div>
 
     <div id="reportsList">
-      <article class="card" style="margin-bottom: 1rem;">
-        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
-          <span class="badge badge-danger">Investasi Bodong</span>
-          <span class="badge badge-success">Terverifikasi</span>
-          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">2 jam lalu</span>
-        </div>
-        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">"Trading Bot AI" Return 10%/Hari</h3>
-        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">Menawarkan bot trading otomatis dengan return tetap harian. Minta transfer ke rekening pribadi. Website palsu dengan dashboard manipulatif.</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
-          <span>📞 <strong>0812-3456-7890</strong></span>
-          <span>🔗 <strong>bit.ly/trading-bot-ai</strong></span>
-          <span>💰 <strong>Rp 15.000.000</strong> (3 korban)</span>
-        </div>
-        <div style="display: flex; gap: 0.5rem;">
-          <a href="/laporan/1" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
-          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
-        </div>
-      </article>
-
-      <article class="card" style="margin-bottom: 1rem;">
-        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
-          <span class="badge badge-warning">Pinjol Ilegal</span>
-          <span class="badge badge-success">Terverifikasi</span>
-          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">5 jam lalu</span>
-        </div>
-        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">Aplikasi "CepatCair" Bunga 40%/Minggu</h3>
-        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">Aplikasi tidak resmi di Play Store, minta akses kontak & galeri, lalu ancar sebar foto ke kontak jika telat bayar. Bunga tidak masuk akal.</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
-          <span>🔗 <strong>cepatchair.apk (file APK)</strong></span>
-          <span>📞 <strong>0857-9876-5432</strong> (CS palsu)</span>
-          <span>💰 <strong>Rp 8.500.000</strong> (7 korban)</span>
-        </div>
-        <div style="display: flex; gap: 0.5rem;">
-          <a href="/laporan/2" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
-          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
-        </div>
-      </article>
-
-      <article class="card" style="margin-bottom: 1rem;">
-        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
-          <span class="badge badge-info">Phishing</span>
-          <span class="badge badge-success">Terverifikasi</span>
-          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">1 hari lalu</span>
-        </div>
-        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">SMS Palsu "BRI" Verifikasi Akun</h3>
-        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">SMS mengaku dari BRI: "Akun Anda akan diblokir, verifikasi di link berikut". Link mengarah ke halaman login palsu mirip BRI. Nomor pengirim: 0812-xxxx-xxxx (bukan short code bank).</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
-          <span>📞 <strong>0812-1111-2222</strong></span>
-          <span>🔗 <strong>bri-verifikasi.xyz</strong></span>
-          <span>🏦 <strong>Target: Nasabah BRI</strong></span>
-        </div>
-        <div style="display: flex; gap: 0.5rem;">
-          <a href="/laporan/3" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
-          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
-        </div>
-      </article>
-
-      <article class="card" style="margin-bottom: 1rem;">
-        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
-          <span class="badge badge-warning">Pinjol Ilegal</span>
-          <span class="badge badge-warning">Menunggu Verifikasi</span>
-          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">2 hari lalu</span>
-        </div>
-        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">Pinjol "DanaCepat" Tanpa Survei</h3>
-        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">Mengaku pinjol legal tapi tidak terdaftar OJK. Proses cepat, tapi bunga tersembunyi 1%/hari + biaya admin besar. Ancaman fisik jika telat.</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
-          <span>🔗 <strong>danacepat.com (domain baru)</strong></span>
-          <span>📞 <strong>0821-5555-6666</strong></span>
-          <span>💰 <strong>Rp 3.200.000</strong> (2 korban)</span>
-        </div>
-        <div style="display: flex; gap: 0.5rem;">
-          <a href="/laporan/4" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
-          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
-        </div>
-      </article>
-
-      <article class="card" style="margin-bottom: 1rem;">
-        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
-          <span class="badge badge-info">Phishing</span>
-          <span class="badge badge-success">Terverifikasi</span>
-          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">3 hari lalu</span>
-        </div>
-        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">Email Palsu "Tokopedia/Shopee" Pesanan Bermasalah</h3>
-        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">Email mengaku dari marketplace: "Pesanan Anda gagal, klik untuk refund". Link ke halaman phishing minta login & data kartu kredit. Domain: tokopedia-refund.xyz (bukan resmi).</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
-          <span>📧 <strong>noreply@tokopedia-refund.xyz</strong></span>
-          <span>🔗 <strong>tokopedia-refund.xyz</strong></span>
-          <span>🎯 <strong>Target: Pengguna e-commerce</strong></span>
-        </div>
-        <div style="display: flex; gap: 0.5rem;">
-          <a href="/laporan/5" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
-          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
-        </div>
-      </article>
-
-      <article class="card" style="margin-bottom: 1rem;">
-        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
-          <span class="badge badge-danger">Investasi Bodong</span>
-          <span class="badge badge-success">Terverifikasi</span>
-          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">4 hari lalu</span>
-        </div>
-        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">Skema "Arisan Digital" Untung 30%/Bulan</h3>
-        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">Menggunakan nama "arisan" tapi sistem piramida. Bayar iuran, dapat komisi undang orang. Uang korban baru bayar korban lama. Sudah puluhan juta rupiah terkumpul.</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
-          <span>📞 <strong>0813-4444-5555</strong> (Leader grup)</span>
-          <span>💬 <strong>Grup WhatsApp "Arisan Sejahtera"</strong></span>
-          <span>💰 <strong>Rp 45.000.000+</strong> (15+ korban)</span>
-        </div>
-        <div style="display: flex; gap: 0.5rem;">
-          <a href="/laporan/6" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
-          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
-        </div>
-      </article>
+      <div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">Memuat laporan...</div>
     </div>
 
-    <nav style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem;" aria-label="Pagination">
-      <button class="btn btn-outline" style="padding: 0.5rem 1rem;" disabled>Sebelumnya</button>
-      <button class="btn btn-primary" style="padding: 0.5rem 1rem; min-width: 44px;">1</button>
-      <button class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 44px;">2</button>
-      <button class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 44px;">3</button>
-      <span style="display: flex; align-items: center; padding: 0 0.5rem; color: var(--color-text-muted);">...</span>
-      <button class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 44px;">12</button>
-      <button class="btn btn-outline" style="padding: 0.5rem 1rem;">Selanjutnya</button>
-    </nav>
+    <nav id="pagination" style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem;" aria-label="Pagination"></nav>
   </section>
 </BaseLayout>
+
+<script>
+  const API_BASE = '/api/reports';
+  let currentPage = 1;
+  const pageSize = 10;
+  let currentSearch = '';
+  let currentType = '';
+  let currentStatus = 'verified';
+
+  const typeLabels: Record<string, string> = {
+    investasi: 'Investasi Bodong',
+    pinjol: 'Pinjol Ilegal',
+    phishing: 'Phishing',
+    belanja: 'Penipuan Belanja',
+    lowongan: 'Lowongan Palsu',
+    hadiah: 'Hadiah Palsu',
+    lainnya: 'Lainnya'
+  };
+
+  const typeBadgeClass: Record<string, string> = {
+    investasi: 'badge-danger',
+    pinjol: 'badge-warning',
+    phishing: 'badge-info',
+    belanja: 'badge-warning',
+    lowongan: 'badge-info',
+    hadiah: 'badge-info',
+    lainnya: 'badge-info'
+  };
+
+  const statusLabels: Record<string, string> = {
+    verified: 'Terverifikasi',
+    pending: 'Menunggu Verifikasi',
+    rejected: 'Ditolak'
+  };
+
+  const statusBadgeClass: Record<string, string> = {
+    verified: 'badge-success',
+    pending: 'badge-warning',
+    rejected: 'badge-danger'
+  };
+
+  function formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Baru saja';
+    if (diffMins < 60) return `${diffMins} menit lalu`;
+    if (diffHours < 24) return `${diffHours} jam lalu`;
+    if (diffDays < 7) return `${diffDays} hari lalu`;
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function renderReport(report: any): string {
+    const contacts = report.contact.split('\\n').slice(0, 2).join(', ');
+    return `
+      <article class="card" style="margin-bottom: 1rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span class="badge ${typeBadgeClass[report.type] || 'badge-info'}">${typeLabels[report.type] || report.type}</span>
+          <span class="badge ${statusBadgeClass[report.status] || 'badge-info'}">${statusLabels[report.status] || report.status}</span>
+          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">${formatDate(report.created_at)}</span>
+        </div>
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">${report.chronology.substring(0, 80)}...</h3>
+        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">${report.chronology.substring(0, 150)}...</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
+          ${contacts ? `<span>📞 <strong>${contacts.length > 50 ? contacts.substring(0, 50) + '...' : contacts}</strong></span>` : ''}
+          ${report.loss_amount > 0 ? `<span>💰 <strong>Rp ${report.loss_amount.toLocaleString('id-ID')}</strong></span>` : ''}
+          <span>👁 ${report.view_count} dilihat</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/laporan/${report.id}" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
+          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderPagination(totalPages: number): string {
+    if (totalPages <= 1) return '';
+    let html = '';
+    const maxVisible = 5;
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
+    if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
+
+    html += `<button class="btn btn-outline" style="padding: 0.5rem 1rem;" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">Sebelumnya</button>`;
+
+    if (start > 1) {
+      html += `<button class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 44px;" data-page="1">1</button>`;
+      if (start > 2) html += `<span style="display: flex; align-items: center; padding: 0 0.5rem; color: var(--color-text-muted);">...</span>`;
+    }
+
+    for (let i = start; i <= end; i++) {
+      html += `<button class="btn ${i === currentPage ? 'btn-primary' : 'btn-outline'}" style="padding: 0.5rem 1rem; min-width: 44px;" ${i === currentPage ? 'disabled' : ''} data-page="${i}">${i}</button>`;
+    }
+
+    if (end < totalPages) {
+      if (end < totalPages - 1) html += `<span style="display: flex; align-items: center; padding: 0 0.5rem; color: var(--color-text-muted);">...</span>`;
+      html += `<button class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 44px;" data-page="${totalPages}">${totalPages}</button>`;
+    }
+
+    html += `<button class="btn btn-outline" style="padding: 0.5rem 1rem;" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">Selanjutnya</button>`;
+    return html;
+  }
+
+  async function loadReports() {
+    const listEl = document.getElementById('reportsList');
+    const paginationEl = document.getElementById('pagination');
+    
+    listEl.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">Memuat laporan...</div>';
+    paginationEl.innerHTML = '';
+
+    try {
+      const params = new URLSearchParams({
+        limit: pageSize.toString(),
+        offset: ((currentPage - 1) * pageSize).toString(),
+        status: currentStatus
+      });
+      if (currentSearch) params.set('q', currentSearch);
+      if (currentType) params.set('type', currentType);
+
+      const response = await fetch(`${API_BASE}?${params}`);
+      const data = await response.json();
+
+      if (data.reports && data.reports.length > 0) {
+        listEl.innerHTML = data.reports.map(renderReport).join('');
+        // Estimate total pages (rough)
+        const totalPages = Math.ceil((data.reports.length + (currentPage - 1) * pageSize) / pageSize) + 1;
+        paginationEl.innerHTML = renderPagination(totalPages);
+      } else {
+        listEl.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">Tidak ada laporan ditemukan.</div>';
+      }
+    } catch (err) {
+      listEl.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--color-primary);">Gagal memuat laporan: ' + err.message + '</div>';
+    }
+  }
+
+  // Event listeners
+  document.getElementById('search')?.addEventListener('input', (e) => {
+    clearTimeout((window as any).searchDebounce);
+    (window as any).searchDebounce = setTimeout(() => {
+      currentSearch = (e.target as HTMLInputElement).value;
+      currentPage = 1;
+      loadReports();
+    }, 300);
+  });
+
+  document.getElementById('filterType')?.addEventListener('change', (e) => {
+    currentType = (e.target as HTMLSelectElement).value;
+    currentPage = 1;
+    loadReports();
+  });
+
+  document.getElementById('filterStatus')?.addEventListener('change', (e) => {
+    currentStatus = (e.target as HTMLSelectElement).value;
+    currentPage = 1;
+    loadReports();
+  });
+
+  document.getElementById('pagination')?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('button[data-page]');
+    if (btn && !btn.disabled) {
+      currentPage = parseInt(btn.dataset.page || '1');
+      loadReports();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  // Initial load
+  loadReports();
+</script>

@@ -129,10 +129,45 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     document.getElementById('reportForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
-      // TODO: Submit to API / backend
-      alert('Laporan terkirim! (Backend belum disambungkan)');
-      e.target.reset();
-      fileList.innerHTML = '';
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0110 10" stroke-opacity="1"/></svg> Mengirim...';
+
+      try {
+        // Collect files (in real implementation, upload to R2/cloud storage first)
+        const fileInput = document.getElementById('evidence') as HTMLInputElement;
+        const files = Array.from(fileInput?.files || []).slice(0, 5);
+        // For now, just store file names - actual upload needs R2/s3
+        const evidenceFiles = files.map(f => f.name);
+
+        const response = await fetch('/api/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: formData.get('type'),
+            contact: formData.get('contact'),
+            chronology: formData.get('chronology'),
+            loss_amount: parseInt(formData.get('loss') as string) || 0,
+            evidence_files: evidenceFiles
+          })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          alert(`Laporan terkirim! ID: ${result.reportId}\nMenunggu verifikasi admin.`);
+          e.target.reset();
+          fileList.innerHTML = '';
+        } else {
+          alert('Gagal: ' + (result.errors?.join(', ') || result.error || 'Unknown error'));
+        }
+      } catch (err) {
+        alert('Error jaringan: ' + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
     });
   </script>
 </BaseLayout>
