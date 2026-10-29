@@ -11,6 +11,9 @@ build/
 # Astro
 .astro/
 
+# Vercel
+.vercel/output/
+
 # Environment
 .env
 .env.local
