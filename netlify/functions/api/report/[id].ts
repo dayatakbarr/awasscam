@@ -1,16 +1,5 @@
 import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
-
-interface Report {
-  id: number;
-  type: string;
-  contact: string;
-  chronology: string;
-  loss_amount: number;
-  evidence_files: string | null;
-  status: string;
-  created_at: string;
-  view_count: number;
-}
+import { getReportById, incrementViewCount } from "../../db";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -41,18 +30,35 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       };
     }
 
-    // TODO: Query DB (Turso/Neon/Supabase)
-    // For now, return 404
+    const report = await getReportById(id);
+
+    if (!report) {
+      return {
+        statusCode: 404,
+        headers: corsHeaders,
+        body: JSON.stringify({ error: 'Report not found' }),
+      };
+    }
+
+    // Increment view count asynchronously
+    incrementViewCount(id).catch(console.error);
+
     return {
-      statusCode: 404,
+      statusCode: 200,
       headers: corsHeaders,
-      body: JSON.stringify({ error: 'Report not found' }),
+      body: JSON.stringify({
+        report: {
+          ...report,
+          evidence_files: report.evidence_files ? JSON.parse(report.evidence_files) : [],
+        },
+      }),
     };
   } catch (e: any) {
+    console.error('Get report error:', e);
     return {
       statusCode: 500,
       headers: corsHeaders,
-      body: JSON.stringify({ error: e.message }),
+      body: JSON.stringify({ error: e.message || 'Internal server error' }),
     };
   }
 };

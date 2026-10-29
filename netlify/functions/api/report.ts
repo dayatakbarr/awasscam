@@ -1,4 +1,5 @@
 import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
+import { createReport } from "../db";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -46,9 +47,15 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       };
     }
 
-    // TODO: Insert to DB (Turso/Neon/Supabase)
-    // For now, return mock success
-    const reportId = Date.now();
+    const reporterIp = event.headers['x-forwarded-for'] || event.headers['x-real-ip'] || 'unknown';
+    const reportId = await createReport({
+      type: body.type,
+      contact: body.contact,
+      chronology: body.chronology,
+      loss_amount: body.loss_amount,
+      evidence_files: body.evidence_files,
+      reporter_ip: reporterIp,
+    });
 
     return {
       statusCode: 200,
@@ -60,10 +67,11 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       }),
     };
   } catch (e: any) {
+    console.error('Create report error:', e);
     return {
       statusCode: 500,
       headers: corsHeaders,
-      body: JSON.stringify({ success: false, error: e.message }),
+      body: JSON.stringify({ success: false, error: e.message || 'Internal server error' }),
     };
   }
 };
