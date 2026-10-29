@@ -1,0 +1,247 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return [];
+};
+---
+<BaseLayout title="Detail Laporan - AwasScam" description="Detail laporan penipuan terverifikasi dengan bukti, kronologi, dan informasi pelaku.">
+  <section class="container" style="padding: 3rem 1.5rem; max-width: 800px;">
+    <nav style="margin-bottom: 2rem;">
+      <a href="/laporan" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">← Kembali ke Daftar</a>
+    </nav>
+
+    <div id="reportContainer">
+      <div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">Memuat detail laporan...</div>
+    </div>
+
+    <section class="container" style="padding: 2rem 1.5rem; max-width: 800px; text-align: center; background: var(--color-surface); border-radius: var(--radius); margin-top: 2rem;">
+      <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.5rem;">Punya pengalaman serupa?</h3>
+      <p style="color: var(--color-text-muted); margin-bottom: 1.5rem;">Tambahkan komentar atau bukti Anda untuk memperkuat laporan ini.</p>
+      <a href="/lapor" class="btn btn-primary">Lapor Sekarang</a>
+    </section>
+  </section>
+</BaseLayout>
+
+<script>
+  const API_BASE = '/api/report';
+  const reportId = new URLSearchParams(window.location.search).get('id') || 
+                   window.location.pathname.split('/').pop();
+
+  const typeLabels: Record<string, string> = {
+    investasi: 'Investasi Bodong',
+    pinjol: 'Pinjol Ilegal',
+    phishing: 'Phishing',
+    belanja: 'Penipuan Belanja',
+    lowongan: 'Lowongan Palsu',
+    hadiah: 'Hadiah Palsu',
+    lainnya: 'Lainnya'
+  };
+
+  const typeBadgeClass: Record<string, string> = {
+    investasi: 'badge-danger',
+    pinjol: 'badge-warning',
+    phishing: 'badge-info',
+    belanja: 'badge-warning',
+    lowongan: 'badge-info',
+    hadiah: 'badge-info',
+    lainnya: 'badge-info'
+  };
+
+  const statusLabels: Record<string, string> = {
+    verified: 'Terverifikasi',
+    pending: 'Menunggu Verifikasi',
+    rejected: 'Ditolak'
+  };
+
+  const statusBadgeClass: Record<string, string> = {
+    verified: 'badge-success',
+    pending: 'badge-warning',
+    rejected: 'badge-danger'
+  };
+
+  function formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('id-ID', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function getContactIcon(contact: string): { svg: string; label: string } {
+    if (contact.match(/^(08|\+628|628)\d{8,}/)) {
+      return { 
+        svg: '<path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>',
+        label: 'Telepon / WhatsApp'
+      };
+    }
+    if (contact.match(/^https?:\/\//) || contact.includes('.')) {
+      return { 
+        svg: '<path d="M21 12.79A9 9 0 1114.64 3.14"/><path d="M21 3l-9 9"/><path d="M15 3h6v6"/>',
+        label: 'Website / Link'
+      };
+    }
+    if (contact.includes('@')) {
+      return { 
+        svg: '<path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2z"/><path d="M22 6l-10 7L2 6"/>',
+        label: 'Email / Username'
+      };
+    }
+    return { 
+      svg: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+      label: 'Rekening / Lainnya'
+    };
+  }
+
+  async function loadReport() {
+    const container = document.getElementById('reportContainer');
+    
+    try {
+      const response = await fetch(`${API_BASE}/${reportId}`);
+      const data = await response.json();
+
+      if (data.error) {
+        container.innerHTML = `<div style="text-align: center; padding: 3rem; color: var(--color-primary);">Laporan tidak ditemukan: ${data.error}</div>`;
+        return;
+      }
+
+      const report = data.report;
+      const contacts = report.contact.split('\n').filter(c => c.trim());
+      const evidence = Array.isArray(report.evidence_files) ? report.evidence_files : [];
+
+      container.innerHTML = `
+        <article class="card">
+          <header style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border);">
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+              <span class="badge ${typeBadgeClass[report.type] || 'badge-info'}">${typeLabels[report.type] || report.type}</span>
+              <span class="badge ${statusBadgeClass[report.status] || 'badge-info'}">${statusLabels[report.status] || report.status}</span>
+              <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">Dilaporkan: ${formatDate(report.created_at)}</span>
+            </div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text); margin-bottom: 0.5rem;">${report.chronology.substring(0, 100)}...</h1>
+            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 0.875rem; color: var(--color-text-muted);">
+              <span>👁 <strong>${report.view_count}</strong> dilihat</span>
+              <span>💬 <strong>${report.loss_amount > 0 ? 'Kerugian: Rp ' + report.loss_amount.toLocaleString('id-ID') : 'Belum diisi'}</strong></span>
+            </div>
+          </header>
+
+          <section style="margin-bottom: 2rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 1rem;">Kontak Pelaku</h2>
+            <div style="display: grid; gap: 0.75rem;">
+              ${contacts.map(contact => {
+                const { svg, label } = getContactIcon(contact);
+                return `
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" style="flex-shrink: 0;">
+                    ${svg}
+                  </svg>
+                  <div>
+                    <div style="font-weight: 500; color: var(--color-text); word-break: break-all;">${contact}</div>
+                    <div style="font-size: 0.8125rem; color: var(--color-text-muted;">${label}</div>
+                  </div>
+                  <button class="btn btn-outline copy-btn" data-text="${contact}" style="padding: 0.375rem 0.75rem; font-size: 0.75rem; margin-left: auto;">Salin</button>
+                </div>
+                `;
+              }).join('')}
+            </div>
+          </section>
+
+          <section style="margin-bottom: 2rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 1rem;">Kronologi Penipuan</h2>
+            <div style="background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border); padding: 1.5rem; white-space: pre-wrap; line-height: 1.7; color: var(--color-text);">${report.chronology}</div>
+          </section>
+
+          ${report.loss_amount > 0 ? `
+          <section style="margin-bottom: 2rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 1rem;">Estimasi Kerugian</h2>
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius); padding: 1.5rem; text-align: center;">
+              <span style="font-size: 2rem; font-weight: 700; color: #dc2626;">Rp ${report.loss_amount.toLocaleString('id-ID')}</span>
+            </div>
+          </section>
+          ` : ''}
+
+          ${evidence.length > 0 ? `
+          <section style="margin-bottom: 2rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 1rem;">Bukti (${evidence.length} file)</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+              ${evidence.map((file: string, i: number) => `
+                <div style="aspect-ratio: 4/3; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 0.875rem; padding: 1rem; text-align: center;">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 0.5rem;">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <path d="M21 15l-5-5L5 17"/>
+                  </svg>
+                  ${file}
+                </div>
+              `).join('')}
+            </div>
+          </section>
+          ` : ''}
+
+          <section style="padding-top: 1.5rem; border-top: 1px solid var(--color-border);">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 1rem;">Tindakan yang Disarankan</h2>
+            <div style="display: grid; gap: 0.75rem;">
+              <a href="https://www.bpi.go.id" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content: flex-start; gap: 0.75rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                Laporkan ke BPI (Investasi Bodong)
+              </a>
+              <a href="https://www.ojk.go.id" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content: flex-start; gap: 0.75rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                Cek Daftar Investasi Legal di OJK
+              </a>
+              <button class="btn btn-primary share-btn" style="justify-content: flex-start; gap: 0.75rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="18" cy="5" r="3"/>
+                  <circle cx="6" cy="12" r="3"/>
+                  <circle cx="18" cy="19" r="3"/>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                </svg>
+                Bagikan Laporan Ini
+              </button>
+            </div>
+          </section>
+        </article>
+      `;
+
+      // Add copy functionality
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const text = btn.getAttribute('data-text');
+          navigator.clipboard.writeText(text || '');
+          const original = btn.textContent;
+          btn.textContent = 'Tersalin!';
+          setTimeout(() => btn.textContent = original, 1500);
+        });
+      });
+
+      // Share functionality
+      document.querySelector('.share-btn')?.addEventListener('click', async () => {
+        const url = window.location.href;
+        const title = document.querySelector('h1')?.textContent || 'Laporan Penipuan';
+        if (navigator.share) {
+          try {
+            await navigator.share({ title, url });
+          } catch (e) { /* user cancelled */ }
+        } else {
+          await navigator.clipboard.writeText(url);
+          alert('Link disalin ke clipboard!');
+        }
+      });
+
+    } catch (err) {
+      container.innerHTML = `<div style="text-align: center; padding: 3rem; color: var(--color-primary);">Gagal memuat: ${err.message}</div>`;
+    }
+  }
+
+  loadReport();
+</script>

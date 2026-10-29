@@ -1,0 +1,215 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+<BaseLayout title="Daftar Laporan - AwasScam" description="Daftar laporan penipuan terverifikasi dari komunitas AwasScam. Filter berdasarkan jenis, status, dan waktu.">
+  <section class="container" style="padding: 3rem 1.5rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--color-text);">Daftar Laporan Penipuan</h1>
+      <p style="color: var(--color-text-muted);">Laporan yang telah diverifikasi komunitas. Urutkan & filter untuk menemukan informasi yang dibutuhkan.</p>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; align-items: center;">
+      <div style="flex: 1; min-width: 250px; position: relative;">
+        <input type="search" id="search" placeholder="Cari nomor, link, kata kunci..." style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 2px solid var(--color-border); border-radius: var(--radius); font-size: 0.9375rem; background: var(--color-bg); color: var(--color-text); outline: none;" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); pointer-events: none;">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+      </div>
+      <select id="filterType" style="padding: 0.75rem 1rem; border: 2px solid var(--color-border); border-radius: var(--radius); font-size: 0.9375rem; background: var(--color-bg); color: var(--color-text); outline: none; min-width: 180px;">
+        <option value="">Semua Jenis</option>
+        <option value="investasi">Investasi Bodong</option>
+        <option value="pinjol">Pinjol Ilegal</option>
+        <option value="phishing">Phishing</option>
+        <option value="belanja">Penipuan Belanja</option>
+        <option value="lowongan">Lowongan Palsu</option>
+        <option value="hadiah">Hadiah Palsu</option>
+      </select>
+      <select id="filterStatus" style="padding: 0.75rem 1rem; border: 2px solid var(--color-border); border-radius: var(--radius); font-size: 0.9375rem; background: var(--color-bg); color: var(--color-text); outline: none; min-width: 160px;">
+        <option value="verified">Terverifikasi</option>
+        <option value="pending">Menunggu Verifikasi</option>
+        <option value="rejected">Ditolak</option>
+      </select>
+    </div>
+
+    <div id="reportsList">
+      <div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">Memuat laporan...</div>
+    </div>
+
+    <nav id="pagination" style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem;" aria-label="Pagination"></nav>
+  </section>
+</BaseLayout>
+
+<script>
+  const API_BASE = '/api/reports';
+  let currentPage = 1;
+  const pageSize = 10;
+  let currentSearch = '';
+  let currentType = '';
+  let currentStatus = 'verified';
+
+  const typeLabels: Record<string, string> = {
+    investasi: 'Investasi Bodong',
+    pinjol: 'Pinjol Ilegal',
+    phishing: 'Phishing',
+    belanja: 'Penipuan Belanja',
+    lowongan: 'Lowongan Palsu',
+    hadiah: 'Hadiah Palsu',
+    lainnya: 'Lainnya'
+  };
+
+  const typeBadgeClass: Record<string, string> = {
+    investasi: 'badge-danger',
+    pinjol: 'badge-warning',
+    phishing: 'badge-info',
+    belanja: 'badge-warning',
+    lowongan: 'badge-info',
+    hadiah: 'badge-info',
+    lainnya: 'badge-info'
+  };
+
+  const statusLabels: Record<string, string> = {
+    verified: 'Terverifikasi',
+    pending: 'Menunggu Verifikasi',
+    rejected: 'Ditolak'
+  };
+
+  const statusBadgeClass: Record<string, string> = {
+    verified: 'badge-success',
+    pending: 'badge-warning',
+    rejected: 'badge-danger'
+  };
+
+  function formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Baru saja';
+    if (diffMins < 60) return `${diffMins} menit lalu`;
+    if (diffHours < 24) return `${diffHours} jam lalu`;
+    if (diffDays < 7) return `${diffDays} hari lalu`;
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function renderReport(report: any): string {
+    const contacts = report.contact.split('\\n').slice(0, 2).join(', ');
+    return `
+      <article class="card" style="margin-bottom: 1rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span class="badge ${typeBadgeClass[report.type] || 'badge-info'}">${typeLabels[report.type] || report.type}</span>
+          <span class="badge ${statusBadgeClass[report.status] || 'badge-info'}">${statusLabels[report.status] || report.status}</span>
+          <span style="color: var(--color-text-muted); font-size: 0.8125rem; margin-left: auto;">${formatDate(report.created_at)}</span>
+        </div>
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-text);">${report.chronology.substring(0, 80)}...</h3>
+        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-bottom: 0.75rem;">${report.chronology.substring(0, 150)}...</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">
+          ${contacts ? `<span>📞 <strong>${contacts.length > 50 ? contacts.substring(0, 50) + '...' : contacts}</strong></span>` : ''}
+          ${report.loss_amount > 0 ? `<span>💰 <strong>Rp ${report.loss_amount.toLocaleString('id-ID')}</strong></span>` : ''}
+          <span>👁 ${report.view_count} dilihat</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/laporan/${report.id}" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Detail</a>
+          <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Bagikan</button>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderPagination(totalPages: number): string {
+    if (totalPages <= 1) return '';
+    let html = '';
+    const maxVisible = 5;
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
+    if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
+
+    html += `<button class="btn btn-outline" style="padding: 0.5rem 1rem;" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">Sebelumnya</button>`;
+
+    if (start > 1) {
+      html += `<button class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 44px;" data-page="1">1</button>`;
+      if (start > 2) html += `<span style="display: flex; align-items: center; padding: 0 0.5rem; color: var(--color-text-muted);">...</span>`;
+    }
+
+    for (let i = start; i <= end; i++) {
+      html += `<button class="btn ${i === currentPage ? 'btn-primary' : 'btn-outline'}" style="padding: 0.5rem 1rem; min-width: 44px;" ${i === currentPage ? 'disabled' : ''} data-page="${i}">${i}</button>`;
+    }
+
+    if (end < totalPages) {
+      if (end < totalPages - 1) html += `<span style="display: flex; align-items: center; padding: 0 0.5rem; color: var(--color-text-muted);">...</span>`;
+      html += `<button class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 44px;" data-page="${totalPages}">${totalPages}</button>`;
+    }
+
+    html += `<button class="btn btn-outline" style="padding: 0.5rem 1rem;" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">Selanjutnya</button>`;
+    return html;
+  }
+
+  async function loadReports() {
+    const listEl = document.getElementById('reportsList');
+    const paginationEl = document.getElementById('pagination');
+    
+    listEl.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">Memuat laporan...</div>';
+    paginationEl.innerHTML = '';
+
+    try {
+      const params = new URLSearchParams({
+        limit: pageSize.toString(),
+        offset: ((currentPage - 1) * pageSize).toString(),
+        status: currentStatus
+      });
+      if (currentSearch) params.set('q', currentSearch);
+      if (currentType) params.set('type', currentType);
+
+      const response = await fetch(`${API_BASE}?${params}`);
+      const data = await response.json();
+
+      if (data.reports && data.reports.length > 0) {
+        listEl.innerHTML = data.reports.map(renderReport).join('');
+        // Estimate total pages (rough)
+        const totalPages = Math.ceil((data.reports.length + (currentPage - 1) * pageSize) / pageSize) + 1;
+        paginationEl.innerHTML = renderPagination(totalPages);
+      } else {
+        listEl.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">Tidak ada laporan ditemukan.</div>';
+      }
+    } catch (err) {
+      listEl.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--color-primary);">Gagal memuat laporan: ' + err.message + '</div>';
+    }
+  }
+
+  // Event listeners
+  document.getElementById('search')?.addEventListener('input', (e) => {
+    clearTimeout((window as any).searchDebounce);
+    (window as any).searchDebounce = setTimeout(() => {
+      currentSearch = (e.target as HTMLInputElement).value;
+      currentPage = 1;
+      loadReports();
+    }, 300);
+  });
+
+  document.getElementById('filterType')?.addEventListener('change', (e) => {
+    currentType = (e.target as HTMLSelectElement).value;
+    currentPage = 1;
+    loadReports();
+  });
+
+  document.getElementById('filterStatus')?.addEventListener('change', (e) => {
+    currentStatus = (e.target as HTMLSelectElement).value;
+    currentPage = 1;
+    loadReports();
+  });
+
+  document.getElementById('pagination')?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('button[data-page]');
+    if (btn && !btn.disabled) {
+      currentPage = parseInt(btn.dataset.page || '1');
+      loadReports();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  // Initial load
+  loadReports();
+</script>

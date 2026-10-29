@@ -1,8 +1,14 @@
 import { defineConfig } from 'astro/config';
+import vercel from '@astrojs/vercel/serverless';
 
 export default defineConfig({
   site: 'https://awasscam.id',
-  output: 'static',
+  output: 'server',
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+  }),
   build: {
     inlineStylesheets: 'auto',
   },

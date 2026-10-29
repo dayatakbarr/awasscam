@@ -1,0 +1,60 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"src": "^/_astro/(.*)$",
+			"headers": {
+				"cache-control": "public, max-age=31536000, immutable"
+			},
+			"continue": true
+		},
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^\\/_image$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/404\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/api\\/report\\/([^/]+?)\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/api\\/report\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/api\\/reports\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/cek\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/lapor\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/laporan\\/([^/]+?)\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/laporan\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/$",
+			"dest": "_render"
+		},
+		{
+			"src": "/.*",
+			"dest": "_render",
+			"status": 404
+		}
+	]
+}
