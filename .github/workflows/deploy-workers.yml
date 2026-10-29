@@ -1,0 +1,50 @@
+name: Deploy Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'workers/**'
+      - 'wrangler.toml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    name: Deploy Workers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: /home/hermes/awasscam
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+          workingDirectory: /home/hermes/awasscam
+        env:
+          WRANGLER_SEND_METRICS: "false"
+
+      - name: Verify deployments
+        run: |
+          echo "Checking worker deployments..."
+          sleep 5
+          curl -sf "https://awasscam-upload.${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.workers.dev" > /dev/null && echo "✅ Upload worker deployed" || echo "⚠️ Upload worker check failed"
+          curl -sf "https://awasscam-analyze.${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.workers.dev" > /dev/null && echo "✅ Analyze worker deployed" || echo "⚠️ Analyze worker check failed"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

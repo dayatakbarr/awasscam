@@ -1,0 +1,35 @@
+name = "awasscam-workers"
+main = "src/index.ts"
+compatibility_date = "2024-10-29"
+compatibility_flags = ["nodejs_compat"]
+
+# Worker 1: Upload Evidence to R2
+[[workers]]
+name = "awasscam-upload"
+main = "workers/upload.ts"
+compatibility_date = "2024-10-29"
+
+[workers.bindings]
+EVIDENCE_BUCKET = { type = "r2_bucket", bucket_name = "awasscam-evidence" }
+DB = { type = "d1_database", binding = "DB", database_name = "awasscam-db", database_id = "" }
+
+# Worker 2: AI Analysis
+[[workers]]
+name = "awasscam-analyze"
+main = "workers/analyze.ts"
+compatibility_date = "2024-10-29"
+
+[workers.bindings]
+AI = { type = "workers_ai" }
+DB = { type = "d1_database", binding = "DB", database_name = "awasscam-db", database_id = "" }
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "awasscam-db"
+database_id = ""
+
+# R2 Bucket
+[[r2_buckets]]
+binding = "EVIDENCE_BUCKET"
+bucket_name = "awasscam-evidence"
